@@ -1,0 +1,10 @@
+1 hacer un div para contener un numero y dos botones: contar y resetear
+
+2 creamos un componente para cada elemento. NOTA: si un elemento se repite, es un candidato para un unico componente, por ejemplo, si tengo que usar dos botones hago los props con el texto para cada uno y las funciones de cada uno 
+
+
+3 Se hacen las funciones de cada boton. 
+
+
+
+
