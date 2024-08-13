@@ -8,3 +8,721 @@
 
 
 
+
+
+
+
+
+NOTAS DEL PROYECTO COMPLETO
+pegar en archivo index.html-------------------------------------------------------------------------------------------------------------------------------------
+
+<!-- 
+
+El siguiente proyecto es un contador de clics. En un cuadrado aparece el numero de veces que damos clic a un boton, tambien podemos reiniciar dicho contador con otro boton debajo del primer boton.
+
+Para realizar este proyecto se necesita seguir primero las instrucciones del archivo 'instalacion de react con vite.txt'
+
+Este proyecto se realiza con 'vite' y tendra 4 archivos: index.html, main.jsx, componentes.jsx e index.css
+
+Iniciemos con el documento 'index.html' que como cualquier html la mision es darle la estructura incial al proyecto pero veremos algunas variantes interesantes con react.
+
+Como todo html, iniciamos con la estructura basica: un <head> y un <body>. En el <head> tenemos etiquetas esenciales como el meta charset, el meta name, y title (podemos colocar el nombre que queramos que aparezca en la pestaña del navegador)
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> nombre que queremos </title>
+  </head>
+
+
+
+
+En el <body> vamos a tener 2 etiquetas: un <div> y un <script>. La primera debe tener un id con nombre 'root' y la segunda debe tener una propiedad 'type' de tipo 'module' y un 'src' apuntando al documento 'main.jsx':
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+
+
+
+PILAS!! verifiquemos que la ruta del <script> sea la correcta, para ello mantenemos pulsada la tecla 'ctrl' y con el mouse damos clic en la ruta que tiene el src, esta accion nos llevara al archivo 'main.jsx'. 
+
+Si esto no sucede es porque la ruta esta mal orientada. Para solucionarlo podemos hacer lo siguiente: borramos toda la propiedad 'src' y escribimos una nueva asi: src="/" automaticamente VSC nos proporciona una lista de carpetas y archivos, aqui escojemos la carpeta 'src' ahora nos muestra una lista de archivos que tiene esta carpeta. Escojemos 'main.jsx'. 
+Nuevamente con la tecla 'ctrl' y el mouse verificamos que ahora lleguemos al archivo 'main.jsx' 
+
+listo!! eso es todo lo que necesitamos en este documento. El resto del programa se realiza en los archivos 'main.jsx' y 'componentes.jsx'
+-->
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pruebas</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pegar en archivo main.jsx-------------------------------------------------------------------------------------------------------------------------------------------
+
+/* 
+Ya vimos el documento 'index.html', ahora veremos el documento 'main.jsx' para hacer una aplicacion que cuenta clics
+
+Lo que vamos a encontrar en este documento es el componente que tendra toda la aplicacion y que luego se renderizara en el 'index.html' visto antes.
+
+Recordemos que en el <body>, del documento html, tenemos un <script> relacionando el html con este documento y tambien tenemos un elemento <div> que tiene un 'id' llamado 'root'
+
+Para que se renderice la app en el html, y se muestre en pantalla, usamos una constante donde guardamos la referencia al <div id=root/> usando la funcion createRoot()
+
+Luego a esta constante le pasamos el metodo .render() y como argumento le pasamos el componente con la aplicacion.
+
+Pero antes se deben traer a este documento algunas herramientas para poder trabajar con ellas. Veamos:
+
+*/
+
+
+import ReactDOM from 'react-dom/client'// se lee: traiga la herramienta 'ReactDOM' desde la libreria 'react-dom/client'
+
+/* Dentro de una const (root) guardamos la referencia al <div id=root /> del html usando el metodo createRoot() y pasándole como argumento un getElementById. En las ultimas lineas veremos el metodo 'render()' usado para renderizar la app*/
+const root = ReactDOM.createRoot(document.getElementById('root'))
+
+
+
+
+/* 
+El hook 'useState' 
+Esta herramienta nos permite controlar el estado de lo que se esta renderizando en pantalla, es decir que podemos cambiar algun valor en la pantalla, como el numero de un contador, pero solo afectando a ese espacio en la pantalla (que seguramente sera un componente).
+Basicamente es una variable dentro de un componente. Para usarlo debemos importarlo primero:
+*/
+import { useState } from "react" //se lee: traiga la herramienta 'useState' desde la libreria 'react'
+
+
+
+
+/* 
+Para organizar la aplicacion y porder solucionar errores a futuro, se pueden crear componentes en otro documento (llamado por ejemplo 'componentes.jsx') que luego seran exportados a cualquier otro documento para su uso. En este caso estamos trayendo, importando, dos componentes que mas adelante veremos su funcion: 
+*/
+import { BotonContarResetear, CajaConteo } from './componentes.jsx' //se lee: traiga los componentes 'BotonContarResetear' y 'CajaConteo' desde el documento 'componentes.jsx'
+
+
+
+
+
+/* 
+Que es un componente en React?
+
+Es una funcion que retorna los elementos html necesarios para pintarlos en pantalla. 
+Por ejemplo, para nuestra aplicacion web podriamos necesitar un elemento <h1> con el titulo de la aplicacion, un elemento <p> con el parrafo y un elemento <img> con la imagen, pues bien, todos estos elementos podrian estar juntos en una funcion de JS que podriamos llamar 'app':
+
+
+function app() {
+    return 
+        <h1>titulo de la app</h1>
+        <img src=imagen.jpg />
+        <p>Parrafo del contenido </p>
+    
+}
+
+Ahora 'App' tiene 3 elementos html listos para ser pintados en pantalla, para ello se usan los metodos createRoot() y render() vistos anteriormente 
+
+
+Tambien debemos saber que existen algunas reglas para que funcionen los componentes, por el momento veamos 3:
+  * El nombre del componente o funcion debe comenzar con la letra en mayuscula, de esta forma se distinguirá de una funcion cualquiera
+  * Cuando se retornen mas de un elemento JSX (html), estos deben estan dentro de un elemento contenedor <div> o un elemento vacio llamado 'fragment' que basicamente son las llaves de inicio y cierre de un elemento html sin contenido en el medio (<>  </>)
+  * El elemento contenedor debe estar seguido de la instruccion 'return' de lo contrario no se vera reflejado dicho retorno. Para evitar esta situacion podemos usar parentesis seguido de la instruccion 'return' y el codigo dentro ya se puede organizar como queramos 
+
+Veamos como queda el codigo anterior teniendo en cuenta estas reglas:
+
+function App(){
+
+  return (
+
+    <>
+      <h1>titulo de la app</h1>
+      <img src=imagen.jpg />
+      <p>parrafo</p>
+    </>
+
+
+  )
+}
+
+
+1) El nombre de la funcion, App, inicia con mayuscula
+2) Justo despues de la instruccion 'return' hay un parentesis y dentro el codigo
+3) Dentro del fragment (llaves de inicio y cierre de un elemento html sin contenido en el medio (<>  </>)) vemos mas de 1 elemento jsx (html). Tambien podriamos usar un <div> en vez del fragment
+
+
+
+CONCLUSION: un componente es una funcion que retorna los elementos jsx (html) listos para ser pintados en pantalla.
+
+
+
+
+Luego de haber importado algunas herramientas, sigamos analizando la aplicacion del ejercicio que es un contador de clics:
+*/
+
+
+
+function App(){
+
+  /* 
+    Despues de importar, traer, el hook 'useState' lo usamos de la siguiente forma:
+
+    Nombramos dos constantes, igual que desestructurar un array. La primera constante tiene un nombre que identifique los datos almacenados y la segunda constante tiene un nombre que haga referencia a la primera, por ejemplo: si la primera se llama 'estado' la otra se podria llamar 'cambiarEstado' o 'colocarEstado' (en ingles setEstado) o 'actualizarEstado' pues la segunda constante es una funcion que se encarga de almacenar los datos en la primer constante.
+
+
+
+    Luego se iguala a 'useState()' y dentro del parentesis se coloca el primer dato que va a tener la primer constante. En otras palabras, lo que esta dentro del parentesis del useState se guarda en la primer constante del array y para actualizar esta constante cargamos el nuevo valor en la funcion que esta en la segunda constante del array para que esta se lo pasa a la primera, veamos:
+  */
+    const [estado, setEstado] = useState(0) //la constante 'estado' inicia con un numero (0) y para cambiar este valor debemos usar la segunda constante que tiene una funcion 
+
+
+
+    /*
+    Las siguientes dos constantes, 'contar' y 'resetear', tienen una funcion cada una. La primera aumenta la constante 'estado' en 1 y la segunda funcion pone 'estado' en 0
+    */
+    const contar = ()=>{setEstado(estado + 1)}/* Fijemonos que la constante 'contar' tiene una funcion que a su vez ejecuta otra funcion, setEstado(). Esta funcion tiene la mision de cambiar el valor de la primer posicion del array en el hook 'useState()', que para este caso se llama 'estado', veamos: const [estado, setEstado]. Inicialmente 'estado' arranca con un numero, el 0, que es puesto cuando escribimos: useState(0). Dentro de los parentesis de la funcion 'setEstado()' colocamos el codigo que queremos que se ejecute cuando se invoque la funcion 'contar' que a su vez ejecuta la funcion 'setEstado()'. El codigo dentro del parentesis indica que el valor de 'estado' se incrementa en 1 cada vez que se invoque, veamos: 'estado' = 'estado' + 1.*/
+
+    
+
+  
+  
+  
+  
+    const resetear = ()=>{setEstado(0)}/* la constante 'resetear' tiene una funcion que a su vez ejecuta otra funcion, la funcion que actualiza la constante 'estado' (del hook useState) indicandole que el valor de 'estado' sera igual a 0. Fijemonos que en este caso, cuando invocamos la const 'resetear', la funcion setEstado() coloca la constante 'estado' en 0, reseteando el numero de clics, veamos: 'estado' = 0.
+  
+  
+  
+  
+    Ahora, debemos llamar a cada funcion para que se ejecuten en su debido momento pero antes debemos entender que son las 'props'
+  
+    Hemos dicho que un componente es una funcion y como toda funcion tambien se debe invocar, llamar para que haga lo programado en su interior.
+    Para llamar a esta funcion o componente, lo hacemos como si fuese un elemento html. Analicemos el ejemplo antes visto: 
+  
+  
+    function App(){
+  
+    return (
+  
+      <>
+        <h1>titulo de la app</h1>
+        <img src=imagen.jpg />
+        <p>parrafo</p>
+      </>
+  
+  
+    )}
+  
+  
+  
+  
+    'App' es un componente, una funcion que retorna elementos jsx (parecidos a los html de siempre) y para llamar a 'App' debemos usar otro elemento jsx, es decir el nombre del componente. Llamemos a 'App':
+  
+    <App />
+  
+    listo!!
+  
+    Notemos que tiene las llaves de un elemento html y el contenido es el nombre del componente, ademas se diferencia de un elemento html por su mayuscula al inicio y por que html no tiene ningun elemento llamado 'App' 
+  
+  
+  
+  
+  
+    Pero... que es son las 'props'?
+    Igual que una funcion, los componentes tambien pueden tener argumentos que se envian al llamar a dicho componente, este debe recibirlos como parametros, de hecho 'props' viene de la palabra 'propiedades' y se escriben algo parecido que las propiedades html. 
+    Coloquemosle 'props' al ejemplo anterior:
+    
+    <App textoTitulo='titulo de la app' textoParrafo='parrafo' />
+  
+    Al llamar al componente 'App' tambien se estan enviando 2 'props': 'textoTitulo' y 'textoParrafo' que, como las variables, debemos colocarles algun valor sea de tipo string, numero, booleano, o array (los datos de tipo objeto enviaran el siguiente valor: Uncaught Error: Objects are not valid as a React child indicando que 'los objetos no son válidos como hijo de React'). En el ejemplo estamos enviando al componente 2 variables con un dato de tipo string.
+  
+    Luego el componente debera recibir dichos argumentos, enviados desde la llamada, de la siguiente forma:
+  
+    
+  function App(props){
+  
+    return (
+  
+      <>
+        <h1>{props.textoTitulo}</h1>
+        <p>{props.textoParrafo}</p>
+      </>
+  
+  
+    )
+  }
+  
+   Fijemonos que en los parentesis del componente esta la palabra 'props'. Esto es un objeto con las propiedades, variables, enviadas desde la llamada, y se construyen algo como:
+
+    props = {
+      textoTitulo='titulo de la app'
+      textoParrafo='parrafo'
+    }
+  
+    Formando propiedades de pares 'clave-valor'
+  
+    Ahora, para usar estos 'props' dentro de los elementos jsx (que retorna el componente) reemplazamos el contenido de cada elemento con las propiedades que tiene el objeto 'props' usando la notacion por punto (nombreDelObjeto.NombreDeLaClave) y dentro de llaves, veamos: 
+    
+    <h1>{props.textoTitulo}</h1>, h1 sera igual al valor que tenga la clave 'textoTitulo' del objeto 'props'
+    <p>{props.textoParrafo}</p>, p sera igual al valor que tenga la clave 'textoParrafo' del objeto 'props' 
+  
+  
+    ¿que ventajas tiene usar props?
+    Pues pensemos en que cada vez que invocamos el componente 'App' podemos enviarle diferentes propiedades para que sean pintadas en pantalla, veamos:
+  
+    root.render(// se lee: renderice los componentes 'App' en pantalla
+    <>
+      <App textoTitulo='titulo 1' textoParrafo='parrafo 1' />
+      <App textoTitulo='titulo 2' textoParrafo='parrafo 2' />
+      <App textoTitulo='titulo 3' textoParrafo='parrafo 3' />
+    </>
+  
+  )
+  
+  
+  
+    Ahora tenemos 3 llamadas al componente 'App' pero cada una le envia diferentes 'props'
+    Cuando se llama por primera vez 'App', se envia un texto de titulo y de parrafo, cuando se vuelve a llamar 'App' tiene otro texto de titulo y de parrafo y en la tercer llamada tiene otro texto de titulo y de parrafo teniendo asi 3 titulos y 3 parrafos diferentes en pantalla pero usando solo un componente
+  
+    NOTA: root.render() es el metodo que renderiza la aplicacion en el <div> con id='root' del html y por ende en la pantalla
+  
+  
+  
+    volviendo a la aplicacion de clics vemos que este componente retorna un <div> (ver abajo), que se usa como contenedor, con 3 componentes mas: <CajaConteo />, <BotonContarReset /> y <BotonContarReset />. 
+
+    Notamos que el ultimo componente se repite una vez. Tambien se aprecian las props que cada uno envia al componente: <CajaConteo /> envia la constante 'estado' del hook useState, el primer <BotonContarReset /> envia 3 props o variables: 'texto' con un string, 'contarResetear' con la funcion 'contar' y 'esContar' con un valor booleano. El segundo <BotonContarReset /> envia 3 props o variables: 'texto' con un string, 'contarResetear' con la funcion 'resetear' y 'esContar' con un valor booleano diferente a la otra llamada, esto quiere decir que se esta usando un mismo componente pero que recibe diferentes props o datos. 
+
+    OJO: las funciones 'contar' y 'resetear' estan mas arriba, una se usa para aumentar la constante 'estado' en 1 y la otra para colocar la misma constante en 0
+
+
+
+
+    <App> retorna un div y dos botones que estan dentro de otro div:
+    */
+  
+  
+    return(
+
+          <div className='contenedorPrincipal'>{/* un <div> con tres elementos mas: otro <div>, y dos <button> */}
+              
+              <CajaConteo /* un <div> usado para mostrar los conteos */
+                  estado = {estado}
+              />
+              
+              < BotonContarResetear /* 1er componente con 3 props */
+                  texto='Contar'
+                  contarResetear = {contar}
+                  esContar = {true}
+                 
+              />
+  
+              < BotonContarResetear /* 2do componente con 3 props, parecido al primero, pero con datos distintos */
+                  texto='Reset'
+                  contarResetear = {resetear}
+                  esContar = {false}
+                
+              />
+          </div>
+          
+    )
+}
+
+
+
+
+/* 
+RECAPITULANDO:
+
+Se importaron las herramientas necesarias:
+
+  import ReactDOM from 'react-dom/client'
+
+  import { useState } from "react" 
+
+  import { BotonContarResetear, CajaConteo } from './componentes.jsx' 
+
+
+luego se aprendio que es un componente 
+
+Luego se aprendio a usar el hook 'useState'
+
+Tambien se aprendio a llamar un componente y a pasarle props
+
+
+
+
+
+Para darle orden a la aplicacion tenemos diferentes documentos. Ya vimos el 'index.html', el 'main.jsx' (este documento), ahora veamos otro documento: 'componentes.jsx'
+
+
+Vimos que el componente 'App' retorna 3 elementos jsx (html) o componentes: <CajaConteo />, <BotonContarReset /> y <BotonContarReset />, pero estos no estan en este documento, es por eso que se tuvieron que importar: import { BotonContarResetear, CajaConteo } desde el documento 'componentes.jsx' , en otras palabras, la llamada a estos componentes esta en este documento pero dichos componentes estan en otro documento y para hacer la conexion 'llamada-componente' se deben importar 
+*/
+
+
+
+
+
+
+/* A la constante (root), donde guardamos la referencia al <div id=root />, le pasamos el metodo 'render()' y como argumento el componente de la app. De esta forma, usando el documento html, se pintara la app o lo que tenga el componente <App/> en el navegador */
+root.render(
+ <App  />
+)
+
+
+
+
+//Ahora veamos el documento 'componentes.jsx'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pegar en archivo componentes.js-----------------------------------------------------------------------------------------------------------------------------------
+
+/*
+Hemos visto que para crear una aplicacion que cuenta los clics tenemos varios archivos. Hasta ahora hemos visto el 'index.html' y el 'main.jsx'. Ahora veremos el documento 'componentes.jsx'.
+
+Es normal ver que una aplicacion este compuesta de diferentes archivos, esto se hace para darle orden al proyecto que se este creando. Imaginemonos que en un mismo archivo se encuentre el codigo html junto con el componente base, 'App', y todos los demas componentes que veremos en este documento... seria un caos y dificilmente se podrian solucionar problemas a futuro.
+
+
+Recordemos que en al archivo 'main.jsx' vimos los componentes y las 'props'. Para el proyecto contador de clics estamos usando un componente base llamado 'App' que retorna 3 componentes: <CajaConteo/> y <BotonContarResetear/>, este ultimo se repite una vez. Tambien les pasamos algunas 'props' o variables a cada componente, veamos: 
+
+
+1er componente:
+
+<CajaConteo 
+  estado = {estado}
+/>
+
+A <CajaConteo> le pasamos la prop o variable 'estado' y como valor, dentro de llaves, le estamos pasando lo que tiene la constante 'estado' del hook 'useState()' 
+
+
+
+2do componente: 
+
+< BotonContarResetear
+  texto='Contar'
+  contarResetear = {contar}
+  esContar = {true}
+
+/>
+
+Al componente <BotonContarResetear> le estamos pasando 3 props: 'texto', 'contarResetear' y 'esContar'. La primera con el string 'Contar', la segunda con la funcion 'contar', que se explico en el archivo main.jsx, y la tercera con un valor booleano y dentro de llaves: true
+
+
+3er componente:
+
+< BotonContarResetear 
+  texto='Reset'
+  contarResetear = {resetear}
+  esContar = {false}
+/>
+
+
+El ultimo componente tiene la misma estructura que el 2do pero los valores de sus props cambian: La primera con el string 'Reset', la segunda con la funcion 'resetear', que se explico en el archivo main.jsx, y la tercera con un valor booleano y dentro de llaves: false
+
+
+Lo que estamos haciendo es llamando a cada componente (funcion), y les estamos enviando argumentos (props). En este documento veremos como se reciben dichas 'props' y como se trabajan con ellas.
+*/
+
+
+
+
+
+import './index.css'// se lee: importe una hoja de estilos 'index.css' 
+
+
+
+
+/*
+En el documento 'main.jsx' estamos llamado a los componentes <CajaConteo/> y <BotonContarResetear/>, este ultimo se repite una vez.
+Pero para que haya una conexion de esa llamada y el componente, este ultimo se debe importar, veamos.
+
+Recordemos que un componente es una funcion ya sea convencional, usando la palabra 'function', o una funcion flecha que retorna elementos jsx.
+Antes del retorno se puede usar codigo que realice alguna operacion. En el componente <App>, del documento 'main.jsx', vimos que antes del retorno habia que ejecutar un useState(), tambien se dejaron listas las funciones que aumentarian o resetearian la constante 'estado'.
+
+Una vez tengamos el componente hecho le vamos anteponer la palabra 'export' para indicar que sera exportado a donde sea llamado.
+El siguiente es un componente usando una funcion flecha: 
+
+export const CajaConteo = ({ estado }) => <div className='cajaDeConteo'>{ estado }</div>
+
+Inicialmente dentro de una constante colocamos una funcion flecha (pilas, estas funciones pueden prescindir de la palabra 'return'). Los parametros seran aquellos que fueron enviados cuando se invoco el componente. Recordemos que las 'props' son un objeto con un argumento o  varios argumentos que se enviaron desde la llamada al componente, por ejemplo:
+
+props = {
+      estado = 34
+    }
+
+por tanto podemos desestructurar dicho objeto usando llaves y colocando la propiedad o propiedades enviadas. Antes habiamos dicho que se usaba con la notacion por punto (nombreDelObjeto.NombreDeLaClave) dentro de llaves:
+
+const CajaConteo = (props) => <div> {props.estado} </div>
+
+
+Pero desestructurando lo usamos sin la notacion:
+
+const CajaConteo = ({ estado }) => <div>{estado}</div>
+
+Ya teniendo el componente, le anteponemos la palabra 'export' para que sea enviado al documento que lo necesite, en este caso a 'main.jsx'
+
+
+El componente <CajaDeConteo> recibe como props 'estado' que tiene guardado el dato de la constante, tambien llamada, 'estado' del useSate()
+*/
+export function CajaConteo( { estado }){
+  return (<div className='cajaDeConteo'>{ estado }</div>)
+}
+ 
+/* 
+
+Entonces <CajaConteo> retorna un div con el dato que venga de 'estado'. Este <div> finalmente se pinta en pantalla mostrando un numero, inicialmente el 0 del useState(0), y a medida que se hagan clics se va aumentando el conteo y se van mostrando en este componente  
+
+Fijemonos que tambien tenemos estilos en este componente, estilos de clase, pero como react tiene la palabra 'class' reservada entonces se usa la palabra 'className' utilizandose como se suele usar en css. Este tambien es un archivo aparte que ya se importo en la parte superior de este documento: import './index.css'. 
+Si vemos dicho documento de estilos, veremos estilos para resetear los que tienen por defecto los navegadores, estilos de clase para el <div> que muestra el numero de 'estado' y otros estilos de clase para los botones de contar y resetear
+
+
+
+
+
+Otro componente que tenemos en este archivo se usa para los botones de contar y resetear:
+*/
+export function BotonContarResetear( { texto, contarResetear, esContar }){
+  return (
+    <button 
+      className = { esContar ? 'botonContar' : 'botonReset'} 
+      onClick={contarResetear}
+    >{texto}</button>
+  )
+}
+
+
+/*
+Vemos la palabra reservada 'export' seguido de una funcion que tiene los parametros desestructurados:
+
+con notacion punto:
+props = {
+  texto = 
+  contarResetear = 
+  esContar = 
+}
+
+sin notacion punto:
+{ texto, contarResetear, esContar }
+
+Pilas!! cada invocacion al componente 'BotonContarResetear' tiene sus propios valores, props, las mismas variables pero con otros datos 
+
+
+Este componente retorna un elemento <button>, un boton.
+
+Para los estilos de este boton usaremos la propiedad 'className', que es igual a la propiedad 'class' de css solo que esta palabra ya esta reservada para react, por tanto se cambio a 'className'.
+
+Fijemonos que este elemento tiene estilos dinamicos, es decir, usando un operador ternario y dependiendo del valor booleano que tenga el parametro 'esContar' va a colocar diferentes estilos css. si 'esContar' es true, entonces usa los estilos de clase 'botonContar' si es false usara los estilos de clase 'botonReset' de esta forma pintara en pantalla dos botones pero con diferentes estilos.
+
+Despues de los estilos encontramos la propiedad 'onClick' conocida como un evento. Cada vez que se da click en un boton se va a ejecutar la funcion que tiene el parametro 'contarResetear'  
+
+
+Entendamos mejor este punto. En el componente general llamado <App> estamos invocando al mismo componente desde dos llamadas distintas (ver archivo 'main.jsx'), ambas envian 3 props pero con diferentes datos: 
+
+
+< BotonContarResetear 
+  texto='Contar'
+  contarResetear = {contar}
+  esContar = {true}
+
+/>
+
+< BotonContarResetear 
+  texto='Reset'
+  contarResetear = {resetear}
+  esContar = {false}
+
+/>
+
+
+
+Cuando se llama por primer vez el componente <BotonContarResetar> para pintar el primer boton, el texto del boton es 'Contar', los estilos seran a los que apunten el 'true' del operador ternario y cada vez que se pulse este primer boton se ejecutara la funcion 'contar' que esta en el archivo 'main.jsx'
+
+
+Luego se vuelve a llamar a este mismo componente <BotonContarResetar> para pintar el segundo boton pero los valores cambian: el texto del boton ahora es 'Reset', los estilos seran a los que apunten el 'false' del operador ternario y cada vez que se pulse este segundo boton se ejecutara la funcion 'resetear' que esta en el archivo 'main.jsx'
+
+Con este sencillo ejemplo notamos las ventajas de react, pues como vimos con un mismo componente pero diferentes props se pueden hacer 2, 3, o mas botones.
+
+
+
+
+RECAPITULANDO
+
+
+  En el archivo 'main.jsx' se hicieron las llamadas a los componentes que estan en este archivo. 
+  
+  Para que esta union llamada-componente funcione, se debe anteponer la palabra 'export' a cada componente
+
+  Las props se pueden desestructurar, dejando entre llaves las propiedades que se envien desde la llamada al componente
+
+  Tambien se pueden usar clases dinamicas para los estilos usando el operador ternario 
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pegar en archivo index.css-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1b1b32;
+}
+
+.contenedorPrincipal{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cajaDeConteo{
+  display: flex;
+  min-width: 200px;
+  height: 200px;
+  border: 7px solid white;
+  margin: 50px;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  font-family: 'Lato', sans-serif;
+  color: white;
+  
+  
+  
+}
+
+
+.cajaDeBotones{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  
+}
+
+
+.botonContar, .botonReset{
+  display: flex;
+  width: 20%;
+  height: 70px;
+  margin: 10px;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-family: 'Lato', sans-serif;
+  border-radius: 20px;
+  cursor: pointer;
+  
+}
+
+
+.botonReset{
+  background-color: blueviolet;
+  color: white;
+  font-weight: bold;
+  box-shadow: 2px 2px 2px blueviolet ;
+}
+
+.botonContar{
+  background-color: #e30deb;
+  color: white;
+  font-weight: bold;
+  box-shadow: 2px 2px 2px #e30deb;
+}
+
+
+
+
